@@ -4,7 +4,13 @@ from django.db import models
 class Writter(models.Model):
     name = models.CharField(max_length=50)
     email = models.EmailField(max_length=50)
+    address = models.TextField(null=True,blank=True)
     phone_number = models.IntegerField( unique=True,null=True,blank=True)
+    birth_date = models.DateTimeField('birth date', null=True, blank=True)
+    male=1
+    fmale=2
+    gender =models.IntegerField('gender',choices=((male,'male'),(fmale,'fmale')),null=True,blank=True)
+    profile_img = models.ImageField('image',null=True,blank=True,upload_to='users/profile_image')
     def __str__(self):
         return self.name
 
