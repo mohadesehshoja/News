@@ -28,7 +28,7 @@ class MyNews(models.Model):
     body = models.TextField('body')
     author = models.ForeignKey(Writter,on_delete=models.CASCADE)
     magzine = models.ForeignKey(Magazine,on_delete=models.CASCADE)
-    topic = models.OneToOneField(Topics,on_delete=models.CASCADE)
+    topic = models.ForeignKey(Topics,on_delete=models.CASCADE)
     date = models.DateTimeField('date',auto_now_add=True)
     def __str__(self):
         return "{}-{}".format(self.title,self.author.name)
