@@ -14,4 +14,5 @@ class MyNewSerializer(serializers.ModelSerializer):
     class Meta:
         model = MyNew
         fields = '__all__'
+        depth:3
 
