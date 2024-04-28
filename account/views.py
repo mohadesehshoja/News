@@ -17,7 +17,7 @@ from rest_framework.authtoken.models import Token
 
 
 # Create your views here.
-class ProfileList(generics.ListCreateAPIView):
+class ProfileList(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
     queryset = Profile.objects.all()
@@ -79,8 +79,6 @@ class ProfileList(generics.ListCreateAPIView):
             return Response({"status": 200, "data": serializer.data})
 
 
-
-
 class ProfileListUpDestroy(generics.RetrieveUpdateDestroyAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
@@ -107,7 +105,8 @@ class loginAPI(generics.ListCreateAPIView):
                         status.HTTP_200_OK)
 
 
-class RegisterAPI(generics.ListCreateAPIView):
+
+class RegisterAPI(generics.GenericAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
@@ -125,13 +124,3 @@ class RegisterAPI(generics.ListCreateAPIView):
             }, status.HTTP_400_BAD_REQUEST)
         serializer.save()
         return Response({'status': True, "message": "user created", "data": serializer.data}, status.HTTP_201_CREATED)
-
-    @action(detail=False, methods=['post'])
-    def send_message(self, request, username):
-        obj = User.objects.get(request.data["username"]==username)
-        serializer = UserSerializer(obj)
-        return Response({
-            "status": 200,
-            "data": serializer.data,
-            "message": "message sent"
-        })

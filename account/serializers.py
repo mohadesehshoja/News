@@ -35,13 +35,14 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
     def validate(self, data):
-        if len(data['phone_number']) != 11:
-            raise serializers.ValidationError('unvalidated phone number')
-        try:
-            int(data['phone_number'])
-        except ValueError:
-            raise serializers.ValidationError('unvalidated phone number')
-        if data['phone_number']:
-            if Profile.objects.filter(phone_number=data['phone_number']).exists():
-                raise serializers.ValidationError('this phonenumber already exists')
+        if data['phone_number'] is not None:
+            if len(data['phone_number']) != 11:
+                raise serializers.ValidationError('unvalidated phone number')
+            try:
+                int(data['phone_number'])
+            except ValueError:
+                raise serializers.ValidationError('unvalidated phone number')
+            if data['phone_number']:
+                if Profile.objects.filter(phone_number=data['phone_number']).exists():
+                    raise serializers.ValidationError('this phonenumber already exists')
         return data

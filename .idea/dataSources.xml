@@ -2,7 +2,7 @@
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
     <data-source source="LOCAL" name="db" uuid="91164bed-03f5-4c07-aef3-9b651ea5eb33">
-      <driver-ref>sqlite.xerial</driver-ref>
+      <driver-ref>4511726f-d685-4f3a-90b0-41969e2ad9fb</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
       <jdbc-url>jdbc:sqlite:C:\Users\Lenovo\PycharmProjects\News\db.sqlite3</jdbc-url>
@@ -13,11 +13,11 @@
         </library>
       </libraries>
     </data-source>
-    <data-source source="LOCAL" name="postgres@localhost" uuid="e067291f-ff08-4651-b46e-ea23025f40fa">
+    <data-source source="LOCAL" name="news@localhost" uuid="7e336b80-9b13-4bdb-8591-156144b1f5f7">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
-      <jdbc-url>jdbc:postgresql://localhost:5432/postgres</jdbc-url>
+      <jdbc-url>jdbc:postgresql://localhost:5432/news</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>
