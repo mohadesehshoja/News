@@ -1,5 +1,7 @@
+from datetime import datetime
 from json import JSONDecodeError
 
+import jwt,datetime
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.http import JsonResponse
@@ -7,6 +9,7 @@ from django.shortcuts import render
 from rest_framework import generics, status, permissions
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import action
+from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.parsers import JSONParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -18,14 +21,25 @@ from rest_framework.authtoken.models import Token
 
 # Create your views here.
 class ProfileList(generics.GenericAPIView):
-    permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
-
     def get(self, request):
-        serializer = ProfileSerializer(Profile.objects.all(), many=True)
+        token = request.COOKIES.get('token')
+        if not token:
+           return AuthenticationFailed('Token is missing')
+        try:
+             payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except:
+             return AuthenticationFailed('Token is missing')
+        try:
+            user = Profile.objects.get(pk=payload['id'])
+        except Profile.DoesNotExist:
+            return Response("Profile does not exist")
+        serializer = ProfileSerializer(user)
         return Response(serializer.data)
+
+
 
     def post(self, request):
         try:
@@ -100,9 +114,18 @@ class loginAPI(generics.ListCreateAPIView):
                 "status": False,
                 "message": "invalid user"
             }, status.HTTP_400_BAD_REQUEST)
-        token, _ = Token.objects.get_or_create(user=user)
-        return Response({"status": True, "message": "login", "token": str(token), "data": request.data},
-                        status.HTTP_200_OK)
+        payload={
+            'id':user.id,
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
+            'iat': datetime.datetime.utcnow()
+        }
+        token=jwt.encode(payload,'secret',algorithm='HS256')
+        response=Response()
+        response.set_cookie(key='token',value=token,httponly=True)
+        response.data={
+            'token': str(token)
+        }
+        return response
 
 
 
@@ -124,3 +147,12 @@ class RegisterAPI(generics.GenericAPIView):
             }, status.HTTP_400_BAD_REQUEST)
         serializer.save()
         return Response({'status': True, "message": "user created", "data": serializer.data}, status.HTTP_201_CREATED)
+
+class LogoutAPI(generics.GenericAPIView):
+    def post(self, request):
+        response=Response()
+        response.delete_cookie(key='token')
+        response.data={
+            'message': 'logged out'
+        }
+        return response

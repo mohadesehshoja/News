@@ -8,4 +8,5 @@ urlpatterns=[
     path('profileposts/<int:pk>',views.ProfileListUpDestroy.as_view(),name='profile_UpDe'),
     path('Registerform/',views.RegisterAPI.as_view(),name='register_api'),
     path('loginform/',views.loginAPI.as_view(),name='login_api'),
+    path('logoutform/',views.LogoutAPI.as_view(),name='logout_api')
 ]
